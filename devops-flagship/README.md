@@ -37,6 +37,7 @@ flowchart LR
 | Helm packaging | `helm/urlshortener/` |
 | Infrastructure as Code | `terraform/` |
 | Observability (Prometheus metrics + Grafana) | `monitoring/`, `/metrics` endpoint |
+| SRE objectives, alerts, and security guidance | `docs/sre-and-security.md`, `monitoring/sre-alerts.yaml`, `k8s/rbac.yaml` |
 
 ## Tech stack
 
@@ -106,6 +107,10 @@ curl localhost:8000/stats/ab12Cd     # click count
 ## Continuous integration
 
 On every push and pull request to `main`, GitHub Actions runs: `ruff check`, `ruff format --check`, `mypy`, and `pytest` behind an 85% coverage gate, then builds the Docker image. See `.github/workflows/ci.yml`.
+
+## Reliability and security
+
+See [SRE and security practices](docs/sre-and-security.md) for the availability and latency SLOs, error-budget policy, incident workflow, capacity planning, RBAC, secret-handling, OIDC, and policy-enforcement approach. Prometheus alert rules are in [sre-alerts.yaml](monitoring/sre-alerts.yaml).
 
 ---
 

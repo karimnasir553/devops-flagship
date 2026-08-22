@@ -1,0 +1,30 @@
+groups:
+  - name: urlshortener.sre
+    rules:
+      - alert: UrlShortenerHighErrorRate
+        expr: |
+          sum(rate(http_requests_total{job="urlshortener",status=~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total{job="urlshortener"}[5m])) > 0.01
+        for: 10m
+        labels:
+          severity: page
+        annotations:
+          summary: URL shortener error rate exceeds 1%
+          runbook: docs/sre-and-security.md
+      - alert: UrlShortenerHighLatency
+        expr: histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{job="urlshortener"}[5m]))) > 0.5
+        for: 15m
+        labels:
+          severity: ticket
+        annotations:
+          summary: URL shortener p95 latency exceeds 500ms
+          runbook: docs/sre-and-security.md
+      - alert: UrlShortenerUnavailableReplicas
+        expr: kube_deployment_status_replicas_available{namespace="urlshortener",deployment="urlshortener"} < 1
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: URL shortener has no available replicas
+          runbook: docs/sre-and-security.md
