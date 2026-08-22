@@ -1,0 +1,34 @@
+replicaCount: 2
+
+image:
+  repository: urlshortener
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: true
+  host: urlshortener.local
+
+config:
+  baseUrl: "http://urlshortener.local"
+
+secret:
+  databaseUrl: "postgresql+psycopg://postgres:postgres@postgres:5432/shortener"
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "128Mi"
+  limits:
+    cpu: "250m"
+    memory: "256Mi"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
